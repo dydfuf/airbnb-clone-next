@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useDispatch } from "react-redux";
 import palette from "../../styles/palette";
 import CloseXIcon from "../../public/static/svg/modal/CloseXIcon.svg";
 import MailIcon from "../../public/static/svg/auth/MailIcon.svg";
@@ -10,6 +11,8 @@ import Input from "../common/Input";
 import Selector from "../common/Selector";
 import { dayList, monthList, yearList } from "../../lib/staticData";
 import Button from "../common/Button";
+import { userActions } from "../../store/user";
+import { signupAPI } from "../../lib/api/auth";
 
 const Container = styled.form`
   width: 568px;
@@ -78,6 +81,8 @@ const SignUpModal: React.FC = () => {
   const [birthDay, setBirthDay] = useState<string | undefined>();
   const [birthMonth, setBirthMonth] = useState<string | undefined>();
 
+  const dispatch = useDispatch();
+
   const toggleHidePassword = () => {
     setHidePassword(!hidePassword);
   };
@@ -110,8 +115,28 @@ const SignUpModal: React.FC = () => {
     setBirthYear(e.target.value);
   };
 
+  const onSubmitSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      const signUpBody = {
+        email,
+        lastname,
+        firstname,
+        password,
+        birthday: new Date(
+          `${birthYear}-${birthMonth!.replace("월", "")}-${birthDay}`
+        ).toISOString(),
+      };
+      const { data } = await signupAPI(signUpBody);
+
+      dispatch(userActions.setLoggedUser(data));
+    } catch (e) {
+      console.log(e);
+    }
+  };
   return (
-    <Container>
+    <Container onSubmit={onSubmitSignUp}>
       <CloseXIcon className="mordal-close-x-icon" />
       <div className="input-wrapper">
         <Input
