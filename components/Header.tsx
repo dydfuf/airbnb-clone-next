@@ -2,18 +2,22 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import Link from "next/link";
 import styled from "styled-components";
+
 import AirbnbLogoIcon from "../public/static/svg/logo/logo.svg";
 import AirbnbLogoText from "../public/static/svg/logo/logo_text.svg";
+
 import palette from "../styles/palette";
 import useModal from "../hooks/useModal";
-import SignUpModal from "./auth/SignUpModal";
 import { useSelector } from "../store";
-import { authActions } from "../store/auth";
+import HeaderAuths from "./HeaderAuths";
+import HeaderUserProfile from "./HeaderUserProfile";
 import AuthModal from "./auth/AuthModal";
-import HamburgerIcon from "../public/static/svg/header/hamburger.svg";
+import { logoutAPI } from "../lib/api/auth";
+import { userActions } from "../store/user";
 
 const Container = styled.div`
   position: sticky;
+  top: 0;
   width: 100%;
   height: 80px;
   display: flex;
@@ -21,7 +25,7 @@ const Container = styled.div`
   align-items: center;
   padding: 0 80px;
   background-color: white;
-  box-shadow: rgba(0, 0, 0, 0.08) 0 1px 12px;
+  box-shadow: rgba(0, 0, 0, 0.08) 0px 1px 12px;
   z-index: 10;
   .header-logo-wrapper {
     display: flex;
@@ -30,7 +34,7 @@ const Container = styled.div`
       margin-right: 6px;
     }
   }
-  .header-auth-button {
+  .header-auth-buttons {
     .header-sign-up-button {
       height: 42px;
       margin-right: 8px;
@@ -40,6 +44,7 @@ const Container = styled.div`
       background-color: white;
       cursor: pointer;
       outline: none;
+      font-weight: 600;
       &:hover {
         background-color: ${palette.gray_f7};
       }
@@ -53,6 +58,7 @@ const Container = styled.div`
       background-color: white;
       cursor: pointer;
       outline: none;
+      font-weight: 600;
       &:hover {
         box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.12);
       }
@@ -79,12 +85,58 @@ const Container = styled.div`
       border-radius: 50%;
     }
   }
+
+  /** react-ouside-click-handler div */
+  .header-logo-wrapper + div {
+    position: relative;
+  }
+
+  .header-usermenu {
+    position: absolute;
+    right: 0;
+    top: 52px;
+    width: 240px;
+    padding: 8px 0;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.12);
+    border-radius: 8px;
+    background-color: white;
+    li {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      height: 42px;
+      padding: 0 16px;
+      cursor: pointer;
+      &:hover {
+        background-color: ${palette.gray_f7};
+      }
+    }
+    .header-usermenu-divider {
+      width: 100%;
+      height: 1px;
+      margin: 8px 0;
+      background-color: ${palette.gray_dd};
+    }
+  }
 `;
 
 const Header: React.FC = () => {
   const { openModal, ModalPortal, closeModal } = useModal();
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
+
+  //* 유저 메뉴 열고, 닫힘 여부
+  const [isUsermenuOpened, setIsUsermenuOpened] = useState(false);
+
+  const logout = async () => {
+    try {
+      await logoutAPI();
+      dispatch(userActions.initUser());
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <Container>
       <Link href="/">
@@ -93,44 +145,12 @@ const Header: React.FC = () => {
           <AirbnbLogoText />
         </div>
       </Link>
-      {!user.isLogged && (
-        <div className="header-auth-button">
-          <button
-            type="button"
-            className="header-sign-up-button"
-            onClick={() => {
-              dispatch(authActions.setAuthMode("signup"));
-              openModal();
-            }}
-          >
-            회원가입
-          </button>
-          <button
-            type="button"
-            className="header-login-button"
-            onClick={() => {
-              dispatch(authActions.setAuthMode("login"));
-              openModal();
-            }}
-          >
-            로그인
-          </button>
-        </div>
-      )}
-      {user.isLogged && (
-        <button className="header-user-profile" type="button">
-          <HamburgerIcon />
-          <img
-            src={user.profileImage}
-            className="header-user-profile=image"
-            alt=""
-          />
-        </button>
-      )}
+      {!user.isLogged && <HeaderAuths />}
+      {user.isLogged && <HeaderUserProfile />}
 
-      <ModalPortal>
+      {/* <ModalPortal>
         <AuthModal closeModal={closeModal} />
-      </ModalPortal>
+      </ModalPortal> */}
     </Container>
   );
 };

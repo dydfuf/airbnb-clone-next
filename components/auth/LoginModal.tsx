@@ -1,15 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import CloseXIcon from "../../public/static/svg/modal/CloseXIcon.svg";
 import MailIcon from "../../public/static/svg/auth/MailIcon.svg";
-import PersonIcon from "../../public/static/svg/auth/PersonIcon.svg";
 import OpenedEyeIcon from "../../public/static/svg/auth/OpenedEyeIcon.svg";
 import ClosedEyeIcon from "../../public/static/svg/auth/ClosedEyeIcon.svg";
 import palette from "../../styles/palette";
 import Button from "../common/Button";
 import Input from "../common/Input";
 import { authActions } from "../../store/auth";
+import { loginAPI } from "../../lib/api/auth";
+import useValidateMode from "../../hooks/useValidateMode";
+import { userActions } from "../../store/user";
 
 const Container = styled.form`
   width: 568px;
@@ -75,8 +77,35 @@ const LoginModal: React.FC<IProps> = ({ closeModal }) => {
     dispatch(authActions.setAuthMode("signup"));
   };
 
+  const { setValidateMode } = useValidateMode();
+
+  //* 로그인 클릭 시
+  const onSubmitLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setValidateMode(true);
+    if (!email || !password) {
+      alert("이메일과 비밀번호를 입력해 주세요");
+    } else {
+      const loginBody = { email, password };
+
+      try {
+        const { data } = await loginAPI(loginBody);
+        dispatch(userActions.setLoggedUser(data));
+        closeModal();
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      setValidateMode(false);
+    };
+  }, []);
+
   return (
-    <Container>
+    <Container onSubmit={onSubmitLogin}>
       <CloseXIcon className="mordal-close-x-icon" onClick={closeModal} />
       <div className="login-input-wrapper">
         <Input
