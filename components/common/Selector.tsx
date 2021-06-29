@@ -1,7 +1,8 @@
+/* eslint-disable indent */
 import React from "react";
 import styled, { css } from "styled-components";
-import { useSelector } from "../../store";
 import palette from "../../styles/palette";
+import { useSelector } from "../../store";
 import WarningIcon from "../../public/static/svg/common/warning.svg";
 
 const normalSelectorStyle = css`
@@ -55,15 +56,14 @@ const RegisterSelectorStyle = css`
   }
 `;
 
-interface SelectorContinerProps {
+interface SelectorContainerProps {
   isValid: boolean;
   validateMode: boolean;
   type: "register" | "normal";
 }
-
-const Container = styled.div<SelectorContinerProps>`
-  ${({ type }) => type === "normal" && normalSelectorStyle}
-  ${({ type }) => type === "register" && RegisterSelectorStyle}
+const Container = styled.div<SelectorContainerProps>`
+  ${({ type }) => type === "normal" && normalSelectorStyle};
+  ${({ type }) => type === "register" && RegisterSelectorStyle};
 
   select {
     ${({ validateMode, isValid }) => {
