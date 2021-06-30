@@ -23,6 +23,7 @@ type RegisterRoomState = {
   longitude: number;
   amentities: string[];
   conveniences: string[];
+  photos: string[];
 };
 
 //* 초기 상태
@@ -69,6 +70,13 @@ const initialState: RegisterRoomState = {
   amentities: [],
   //* 편의 공간
   conveniences: [],
+  //* 숙소 사진
+  photos: [
+    "https://next-bnb-bucket.s3.ap-northeast-2.amazonaws.com/99b983892094b5c6d2fc3736e15da7d1__97e3591a-adc3-42dd-a064-c8f21e62ab9d.jpg",
+    "https://next-bnb-bucket.s3.ap-northeast-2.amazonaws.com/99b983892094b5c6d2fc3736e15da7d1__97e3591a-adc3-42dd-a064-c8f21e62ab9d.jpg",
+    "https://next-bnb-bucket.s3.ap-northeast-2.amazonaws.com/99b983892094b5c6d2fc3736e15da7d1__97e3591a-adc3-42dd-a064-c8f21e62ab9d.jpg",
+    "https://next-bnb-bucket.s3.ap-northeast-2.amazonaws.com/99b983892094b5c6d2fc3736e15da7d1__97e3591a-adc3-42dd-a064-c8f21e62ab9d.jpg",
+  ],
 };
 
 const registerRoom = createSlice({
@@ -225,6 +233,10 @@ const registerRoom = createSlice({
     //* 편의공간 변경하기
     setConveniences(state, action: PayloadAction<string[]>) {
       state.conveniences = action.payload;
+    },
+    //* 숙소 사진 변경하기
+    setPhotos(state, action: PayloadAction<string[]>) {
+      state.photos = action.payload;
     },
   },
 });
