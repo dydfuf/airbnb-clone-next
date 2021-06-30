@@ -31,7 +31,6 @@ const Container = styled.div`
     font-size: 14px;
     max-width: 400px;
     margin-bottom: 24px;
-    max-width: 400px;
     word-break: keep-all;
   }
   .register-room-maximum-guest-count-wrapper {
