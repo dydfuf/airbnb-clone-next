@@ -70,6 +70,7 @@ interface IProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   color?: "dark_cyan" | "white" | "bittersweet";
   width?: string;
   colorReverse?: boolean;
+  // eslint-disable-next-line no-undef
   icon?: JSX.Element;
 }
 
