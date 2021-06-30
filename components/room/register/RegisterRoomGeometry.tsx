@@ -1,21 +1,23 @@
 import React, { useEffect, useRef } from "react";
-import { useDispatch } from "react-redux";
-import styled from "styled-components";
 import throttle from "lodash/throttle";
+import { useDispatch } from "react-redux";
+
+import styled from "styled-components";
 import { useSelector } from "../../../store";
-import { registerRoomActions } from "../../../store/registerRoom";
+
 import palette from "../../../styles/palette";
 import RegisterRoomFooter from "./RegisterRoomFooter";
+import { registerRoomActions } from "../../../store/registerRoom";
 
 const Container = styled.div`
   padding: 62px 30px 100px;
-
   h2 {
     font-size: 19px;
     font-weight: 800;
     margin-bottom: 56px;
   }
   h3 {
+    font-size: 14px;
     font-weight: bold;
     color: ${palette.gray_76};
     margin-bottom: 6px;
@@ -43,12 +45,6 @@ const Container = styled.div`
   }
 `;
 
-declare global {
-  interface Window {
-    initMap: () => void;
-  }
-}
-
 //* 구글 지도 script 불러오기
 const loadMapScript = () => {
   return new Promise<void>((resolve) => {
@@ -61,6 +57,13 @@ const loadMapScript = () => {
     };
   });
 };
+
+declare global {
+  interface Window {
+    initMap: () => void;
+  }
+}
+
 const RegisterRoomGeometry: React.FC = () => {
   const mapRef = useRef<HTMLDivElement>(null);
   const latitude = useSelector((state) => state.registerRoom.latitude);
