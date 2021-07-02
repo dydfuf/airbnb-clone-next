@@ -33,6 +33,7 @@ const Container = styled.div`
     .header-logo {
       margin-right: 6px;
     }
+    cursor: pointer;
   }
   .header-auth-buttons {
     .header-sign-up-button {
